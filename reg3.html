@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no, minimal-ui" />
+    <meta charset="UTF-8">
+    <title>存知开户</title>
+    <link href="css/reg.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/file.js"></script>
+</head>
+<body>   
+<div class="cont">
+  <div class="title w94">填写开户信息<span>*为必填项</span></div>
+    <div class="main w94">
+		<form action="data_mobile" method="post" enctype="multipart/form-data" >
+		<dl class="r3_dl2">
+ 			<dd>
+            	<span id="preview">
+	           		 <img id="imghead" src="images/re_02.jpg" />
+		    	</span>
+	 			<label class="btn-upimg">
+                    <input class="r3_fie" type="file" accept="image/*" name="attach" onchange="previewImage(this)">
+                    <span>点击上传证件照片</span>
+                    <span class="gray">（身份证正面照片小于250K)</span>
+                </label>	
+            </dd>
+ 		</dl>
+        <div class="m_submt_3"><input type="submit" class="in_sub_3" value="提交"></div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

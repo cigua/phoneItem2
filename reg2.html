@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no, minimal-ui" />
+    <meta charset="UTF-8">
+    <title>存知开户</title>
+    <link href="css/reg.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+<div class="cont">
+  <div class="title w94">填写开户信息<span>*为必填项</span></div>
+    <div class="main w94">
+        <div class="m_ul3 m_ul4 w94">
+        	<p class="clear">
+                <label><span>*</span>银 行 卡 ：</label>
+                <select name="recommendbankcode" class="in_text in_sel">
+                	<option value="0">请选择</option>
+                    <option value="005">农行(青西文交所开户请选择该选项)</option>
+                    <option value="18">平安/平安易宝</option>
+                    <option value="10">工行(只支持南交所开户)</option>
+                    <option value="1">光大(只支持艺交所开户)</option>
+                </select>
+            </p>
+            <p class="clear"><label><span>*</span>银行卡号：</label><input type="text" name="bankaccount" class="in_text" placeholder="请输入银行卡号"></p>
+        </div>
+
+        <ul class="m_ul5 w94">
+        	<li class="clear">
+                <label class="mu5_lab1"><span>*</span>投资者类型：</label>
+                <label class="mu5_lab2">
+                    <input type="radio" name="type" class="m_rad" value="3" checked>
+                    <span>自然人投资者</span>
+                </label>
+            </li>
+        </ul>
+        <div class="m_div">
+            <div class="m_ul3 w94">
+            	<p><span>*</span>紧急联系人：</p>
+                <p class="clear"><input type="text" class="in_text3" name="contactman" placeholder="请输入紧急联系人姓名"></li>
+                <p><span>*</span>紧急联系人手机号：</p>
+                <p class="clear"><input type="text" name="contacterphoneno" class="in_text3" placeholder="请输入紧急联系人手机号码"></li>
+            </div>
+            <div class="m_ul3 w94" style="display:none;">
+            	<p><span>*</span>营业执照号：</p>
+                <p class="clear"><input type="text" name="businessLicenseno" class="in_text3" placeholder="请输入您的执照号"></p>
+                <p><span>*</span>组织机构代码号：</p>
+                <p class="clear"><input type="text" name="taxRegistrationno" class="in_text3" placeholder="请输入您的代码号"></p>
+            </div>
+        </div>
+        <div class="m_submt"><input type="button" name="next" class="in_sub" value="下一步"></div>
+    </div>
+</div>
+<script>
+$(function(){
+			$('.m_ul5 li').click(function(){
+				var inx=$(this).index();
+				$('.m_div ul').eq(inx).show(0).siblings().hide(0);
+			});
+
+	});
+</script>
+<script type="text/javascript">
+    $(function(){
+        var data = {};
+        var is_banktype = false;
+        var is_bank = false;
+        var is_man = true;
+        var is_phonenum = false;
+        $(".in_sub").attr("disabled",true).css("background","#ccc");
+        data['type'] = $(".m_rad:checked").val();
+        $(".in_sel").change(function(){
+            var banktype = $(".in_sel").val();
+           // console.log(banktype);
+            if (banktype!=0) {
+                data['recommendbankcode']=banktype;
+                is_banktype=true;
+                if (is_banktype&&is_bank&&is_man&&is_phonenum) {
+                    $(".in_sub").attr("disabled",false).css("background","#ff4141");
+                };
+            }else{
+                is_banktype=false;
+                $(".in_sel").css('background','#ff4141');
+                $(".in_sub").attr("disabled",true).css("background","#ccc");
+            }
+        })
+
+        $(":input[name='bankaccount']").blur(function(){
+            var bank = $(this).val();
+            var sign = luhmCheck(bank);
+            //console.log(sign);
+            //console.log(bank);
+                if (sign === true&&bank != '') {
+                    $.post('check_name',{'type':'bank','bankaccount':bank},function(e){
+                        e=eval("("+ e +")");
+                        if (e.status == 0) {
+                            $(":input[name='bankaccount']").val(" ");
+                            $(":input[name='bankaccount']").val("银行卡号已注册");
+                            $(":input[name='bankaccount']").css("background","#fdd1d1");
+                            $(".in_sub").attr("disabled",true).css("background","#ccc");
+                        }else{
+                            is_bank=true;
+                            data['bankaccount']=bank;
+                            $(":input[name='name']").css("background","#fff");
+                            if (is_banktype&&is_bank&&is_man&&is_phonenum) {
+                                $(".in_sub").attr("disabled",false).css("background","#ff4141");
+                            };
+                        }
+                    })
+                }else {
+                    is_bank=false;
+                    $(this).val('');
+                    $(this).val("不合法的银行卡号");
+                    $(this).css('background','#fdd1d1');
+                    $(".in_sub").attr("disabled",true).css("background","#ccc");
+                }
+        })
+
+        $(".m_rad").click(function(){
+            data['type'] = $(".m_rad:checked").val();
+          //  console.log(data['type']);
+        })
+
+        $(":input[name='contactman']").blur(function() {
+            if (data['type'] ==3 ) {
+                var name = $(this).val();
+               // console.log(name);
+                if (!is_chinese(name)) {
+                    is_man=false;
+                    $(this).val(" ");
+                    $(this).val("请输入中文名");
+                    $(this).css("background","#fdd1d1");
+                    $(".in_sub").attr("disabled",true).css("background","#ccc");
+                }else{
+                    is_man=true;
+                    data['contactman'] = name;
+                    $(this).css("background","#fff");
+                    if (is_banktype&&is_bank&&is_man&&is_phonenum) {
+                        $(".in_sub").attr("disabled",false).css("background","#ff4141");
+                    };
+                }
+            }
+        });
+
+        $(":input[name='contacterphoneno']").change(function() {
+            if (data['type'] ==3 ) {
+                var phone = $(this).val();
+                //console.log(is_phone(phone));
+                if(!is_phone(phone)){
+                    is_phonenum=false;
+                    $(this).val(" ");
+                    $(this).val("请输入11位手机号");
+                    $(this).css("background","#fdd1d1");
+                    $(".in_sub").attr("disabled",true).css("background","#ccc");
+                }else{
+                    is_phonenum=true;
+                    data['contacterphoneno'] = phone;
+                    $(this).css("background","#fff");
+                    if (is_banktype&&is_bank&&is_man&&is_phonenum) {
+                        $(".in_sub").attr("disabled",false).css("background","#ff4141");
+                    };
+                   // console.log(data);
+                }
+            }
+        });
+
+        $(":input[name='businessLicenseno']").blur(function() {
+            if (data['type'] ==1 ) {
+                var bus = $(this).val();
+                if(bus ==''){
+                    is_phonenum=false;
+                    $(this).val(" ");
+                    $(this).val("请输入营业执照号");
+                    $(this).css("background","#fdd1d1");
+                    $(".in_sub").attr("disabled",true).css("background","#ccc");
+                }else{
+                    is_phonenum=true;
+                    data['contacterphoneno'] = phone;
+                    $(this).css("background","#fff");
+                    if (is_banktype&&is_bank&&is_man&&is_phonenum) {
+                        $(".in_sub").attr("disabled",false).css("background","#ff4141");
+                    };
+                    //console.log(data);
+                }
+            }
+        });
+
+        $(":input[name='contacterphoneno']").change(function() {
+            if (data['type'] ==1 ) {
+                var phone = $(this).val();
+                if(!is_phone(phone)){
+                    is_phonenum=false;
+                    $(this).val(" ");
+                    $(this).val("请输入11位手机号");
+                    $(this).css("background","#fdd1d1");
+                    $(".in_sub").attr("disabled",true).css("background","#ccc");
+                }else{
+                    is_phonenum=true;
+                    data['contacterphoneno'] = phone;
+                    $(this).css("background","#fff");
+                    if (is_banktype&&is_bank&&is_man&&is_phonenum) {
+                        $(".in_sub").attr("disabled",false).css("background","#ff4141");
+                    };
+                    //console.log(data);
+                }
+            }
+        });
+
+        $('.in_sub').click(function(){
+            $.post('mobile_submit',{'key':'second','second':data},function(e){
+                e=eval("("+ e +")");
+            if (e.status == 1) {
+                location.href="reg3";
+            };
+        })
+            return false;
+        })
+
+        $(":input[type='text']").click(function(){
+                $(this).val('');
+                $(this).css('background','#fff');
+        })
+    })
+</script>
+</body>
+</html>

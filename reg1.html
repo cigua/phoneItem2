@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no, minimal-ui" />
+	<meta charset="UTF-8">
+	<title>存知开户</title>
+    <link href="css/reg.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery.js"></script>
+</head>
+<body>
+<div class="cont">
+  <div class="title w94">填写开户信息<span>*为必填项</span></div>
+    <form action="mobile_submit" method="post">
+    <div class="main w94">
+    	<ul class="m_ul1 clear">
+        	<label class="on">
+                <li><img src="images/re_01.png"><span>南京文交所</span></li>
+                <input type="checkbox" checked value="1" sign="nan" name="istype[nan]" />
+            </label>
+            <label>
+                <li><img src="images/re_02.png"><span>中国艺交所</span></li>
+                <input type="checkbox" checked value="1" sign="zh" name="istype[zh]" />
+            </label>
+            <label>
+                <li><img src="images/re_3.png"><span>南方文交所</span></li>
+                <input type="checkbox" checked value="1" sign="nanf" name="istype[nanf]" />
+            </label>
+            <label>
+                <li><img src="images/re_04.png"><span>中南交易所</span></li>
+                <input type="checkbox" checked value="1" sign="zn" name="istype[zn]" />
+            </label>
+        </ul>
+        <div class="m_ul3 w94">
+        	<p class="clear">
+                <label><span>*</span>姓名：</label>
+                <input type="text" class="in_text" name="name" placeholder="请输入您的姓名">
+            </p>
+            <p class="clear">
+                <label><span>*</span>手机号：</label>
+                <input id="phone" type="tel" class="in_text" name="registeredphoneno" placeholder="请输入您的手机号">
+            </p>
+            <p class="clear m_li3">
+                <label><span>*</span>验证码：</label>
+                <input id="yanzhengma" type="text" class="in_text2" name="yanzhengma" placeholder="请输入验证码">
+                <b class="kh_b">获取验证码</b>
+            </p>
+            <p class="clear">
+                <label><span>*</span>证件号码：</label>
+                <input maxlength="18" type="text" id="idcard" name="cardnumber" class="in_text" placeholder="请输入您的身份证号码">
+            </p>
+        </div>
+        <div class="m_submt"><input type="button" class="in_sub" value="下一步"></div>
+	</form>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+            //类别选择
+            $('.m_ul1 label').click(function() {
+                if ($(this).children().last().prop('checked')) {
+                     $(this).removeClass('on');
+                } else {
+                    $(this).addClass('on');
+                }
+            });
+    });
+</script>
+
+</body>
+</html>
